@@ -1,0 +1,2 @@
+name,url,email,username,password,note,totp,vault
+"Your title here","https://example.com","Your email address","Your username","password123","Your notes","","Personal"

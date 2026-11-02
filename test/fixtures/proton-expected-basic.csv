@@ -1,0 +1,4 @@
+"name","url","email","username","password","note","totp","vault"
+"Example Mail","https://mail.example.com","alice@example.com","","Fake-Pass-001","","","Norton Import"
+"Example Forum","https://forum.example.org/login","","bob_smith","Fake-Pass-002","Recovery codes in drawer","","Norton Favourites"
+"Example Bank","https://bank.example.net","carol@example.net","","Fake-Pass-003","","","Norton Import"

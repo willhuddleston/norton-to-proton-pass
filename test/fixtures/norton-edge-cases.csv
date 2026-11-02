@@ -1,0 +1,29 @@
+Format,Version,Product,Product Version,Exported Date
+BB633E3B-1DEC-47FC-9F9A-0301E80FE6C0,2.0,Norton Password Manager (Extension),8.3.1.1559,27/10/2026 23:36
+Item Type,User Name,Password,Site Name,Login URL,Notes,Secure,Favorite
+login,jane@gmail.com,Fake-E01,Email: plain,https://e01.example.com,,false,false
+login,jane.doe+shopping@outlook.co.uk,Fake-E02,"Email: plus tag, multi-part domain",https://e02.example.com,,false,false
+login,jane@bücher.de,Fake-E03,Email: non-English domain,https://e03.example.com,,false,false
+login,jane_doe,Fake-E04,Username: no @,https://e04.example.com,,false,false
+login,@janedoe,Fake-E05,Username: handle,https://e05.example.com,,false,false
+login,jane@localhost,Fake-E06,Username: no dot in domain,https://e06.example.com,,false,false
+login,admin@company,Fake-E07,Username: no TLD,https://e07.example.com,,false,false
+login,jane@gmail,Fake-E08,Username: likely typo,https://e08.example.com,,false,false
+login,07700 900123,Fake-E09,Username: phone number,https://e09.example.com,,false,false
+login,jane @gmail.com,Fake-E10,Username: contains space,https://e10.example.com,,false,false
+login,  padded@example.com  ,Fake-E11,Email: surrounding spaces (written unchanged),https://e11.example.com,,false,false
+login,notes@example.com,Fake-N01,Multi-line note,https://n01.example.com,"Line one
+Line two, with a comma
+Line three with ""quotes""",false,false
+login,pw@example.com,"Fa,ke""Pa'ss;word","Password with , "" ' ;",https://n02.example.com,,false,false
+login,noname@example.com,Fake-N03,,https://www.example.org/login,Name should come from URL: example.org,false,false
+login,noscheme@example.com,Fake-N04,URL without scheme,example.net/signin,Warn: no scheme,false,false
+login,nopass@example.com,,Empty password,https://n05.example.com,Warn: empty password,false,false
+login,,Fake-N06,,,Name falls back to Untitled login,false,false
+login,unicode@example.com,Fäké-Pässwörd-東京-🔑,Café Zürich 東京,https://n07.example.com,Ünïcödé note ✓,false,true
+login,jane@gmail.com,Fake-E01,Email: plain,https://e01.example.com,,false,false
+login,short@example.com,Fake-N08,Row missing cells
+Item Type,Title,Information,Secure,Favorite
+notes,Wi-Fi details,"Network: ExampleNet
+Key: not-a-real-key",false,false
+notes,Locker code,1234 (fake),true,false

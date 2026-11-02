@@ -1,0 +1,10 @@
+Format,Version,Product,Product Version,Exported Date
+BB633E3B-1DEC-47FC-9F9A-0301E80FE6C0,2.0,Norton Password Manager (Extension),8.3.1.1559,27/10/2026 23:36
+Item Type,User Name,Password,Site Name,Login URL,Notes,Secure,Favorite
+login,alice@example.com,Fake-Pass-001,Example Mail,https://mail.example.com,,false,false
+login,bob_smith,Fake-Pass-002,Example Forum,https://forum.example.org/login,Recovery codes in drawer,false,true
+login,carol@example.net,Fake-Pass-003,Example Bank,https://bank.example.net,,true,false
+Item Type,Title,Information,Secure,Favorite
+notes,Wi-Fi details,"Network: ExampleNet
+Key: not-a-real-key",false,false
+notes,Locker code,1234 (fake),true,false
