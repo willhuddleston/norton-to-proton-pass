@@ -1,0 +1,2 @@
+# Fixtures must keep their exact bytes (BOM, CRLF vs LF), so never convert them.
+test/fixtures/*.csv -text
