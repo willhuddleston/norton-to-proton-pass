@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta name="color-scheme" content="light dark">
+<title>Norton to Proton Pass</title>
+<style>
+  :root {
+    --bg: #f6f7f9;
+    --surface: #ffffff;
+    --surface-2: #f0f2f5;
+    --text: #1b1f24;
+    --muted: #5b6470;
+    --border: #d8dde3;
+    --accent: #6d4aff;
+    --accent-text: #ffffff;
+    --accent-soft: #ece7ff;
+    --focus: #6d4aff;
+    --warn: #8a5a00;
+    --warn-soft: #fff4dc;
+    --error: #b42318;
+    --error-soft: #fdecea;
+    --ok: #1a7f37;
+    --radius: 10px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #121418;
+      --surface: #1b1e24;
+      --surface-2: #242830;
+      --text: #e8eaed;
+      --muted: #a0a8b3;
+      --border: #343944;
+      --accent: #9b85ff;
+      --accent-text: #121418;
+      --accent-soft: #2c2650;
+      --focus: #b3a3ff;
+      --warn: #f2c063;
+      --warn-soft: #3a2e14;
+      --error: #ff8a80;
+      --error-soft: #3d1c1a;
+      --ok: #6fd08c;
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  [hidden] { display: none !important; }
+
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .topbar-inner, main {
+    max-width: 960px;
+    margin: 0 auto;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .topbar-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 56px;
+  }
+  h1 { font-size: 1.15rem; margin: 0; }
+  main { padding-top: 24px; padding-bottom: 48px; }
+  .intro { color: var(--muted); margin: 0 0 24px; }
+
+  .step {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  .step h2 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.05rem;
+    margin: 0 0 12px;
+  }
+  .step-num {
+    display: inline-grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-size: 0.85rem;
+    font-weight: 700;
+    flex: none;
+  }
+
+  button, select, input[type="text"] {
+    font: inherit;
+    color: inherit;
+  }
+  button {
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: var(--surface-2);
+    border-radius: 8px;
+    padding: 8px 14px;
+  }
+  button:hover { border-color: var(--muted); }
+  button.primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-text);
+    font-weight: 600;
+  }
+  button:disabled { opacity: 0.5; cursor: not-allowed; }
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+  .drop-zone {
+    border: 2px dashed var(--border);
+    border-radius: var(--radius);
+    padding: 28px 16px;
+    text-align: center;
+    background: var(--surface-2);
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .drop-zone.dragging { border-color: var(--accent); background: var(--accent-soft); }
+  .drop-zone p { margin: 0 0 12px; }
+  .file-name { margin: 12px 0 0; font-weight: 600; overflow-wrap: anywhere; }
+  .privacy { margin: 12px 0 0; color: var(--muted); font-size: 0.92rem; }
+  a { color: var(--accent); }
+
+  .alert {
+    margin: 12px 0 0;
+    padding: 10px 14px;
+    border-radius: 8px;
+    background: var(--error-soft);
+    color: var(--error);
+    font-weight: 600;
+  }
+
+  .summary { font-size: 1.05rem; font-weight: 600; margin: 0 0 8px; }
+  .summary .count-ok { color: var(--ok); }
+  .skipped-list { margin: 0 0 12px; padding-left: 20px; color: var(--muted); font-size: 0.92rem; }
+
+  details.panel {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin: 8px 0;
+    background: var(--surface-2);
+  }
+  details.panel > summary { cursor: pointer; padding: 8px 12px; font-weight: 600; }
+  details.panel.warn { background: var(--warn-soft); }
+  details.panel.warn > summary { color: var(--warn); }
+  details.panel ul { margin: 0; padding: 0 12px 10px 32px; overflow-wrap: anywhere; }
+
+  .toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 16px 0 10px;
+  }
+  .segmented {
+    display: inline-flex;
+    flex-wrap: wrap;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+  }
+  .segmented legend { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .segmented label { position: relative; }
+  .segmented input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+  .segmented span { display: block; padding: 6px 12px; font-size: 0.92rem; }
+  .segmented label + label span { border-left: 1px solid var(--border); }
+  .segmented input:checked + span { background: var(--accent); color: var(--accent-text); }
+  .segmented input:focus-visible + span { outline: 3px solid var(--focus); outline-offset: -3px; }
+
+  .table-wrap {
+    overflow: auto;
+    max-height: 60vh;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+  }
+  /* On narrow screens the table scrolls sideways inside .table-wrap
+     instead of squeezing every column. */
+  table { border-collapse: collapse; width: 100%; min-width: 760px; font-size: 0.9rem; }
+  th, td {
+    text-align: left;
+    padding: 6px 10px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    overflow-wrap: break-word;
+  }
+  th { position: sticky; top: 0; background: var(--surface-2); font-weight: 600; white-space: nowrap; }
+  td.password { font-family: ui-monospace, "Cascadia Mono", Consolas, monospace; white-space: pre; }
+  td .empty { color: var(--muted); }
+  .no-rows { padding: 12px; color: var(--muted); margin: 0; }
+
+  details.advanced > summary { cursor: pointer; font-weight: 600; font-size: 1.05rem; }
+  details.advanced > summary .step-num { margin-right: 10px; }
+  .options { display: grid; gap: 18px; margin-top: 16px; }
+  .option > .label, .option legend { display: block; font-weight: 600; margin-bottom: 6px; padding: 0; }
+  .option fieldset { border: 0; margin: 0; padding: 0; }
+  .option .hint { color: var(--muted); font-size: 0.88rem; margin: 4px 0 0; }
+  .option select, .option input[type="text"] {
+    width: 100%;
+    max-width: 420px;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface);
+  }
+  .radio { display: flex; align-items: flex-start; gap: 8px; margin: 4px 0; }
+  .radio input { margin-top: 5px; }
+  .indent { margin: 6px 0 0 26px; }
+
+  .checklist { margin: 16px 0 0; }
+  .checklist h3 { font-size: 1rem; margin: 0 0 6px; }
+  .checklist ol { margin: 0; padding-left: 22px; }
+  .checklist li { margin: 4px 0; }
+
+  footer { color: var(--muted); font-size: 0.85rem; text-align: center; padding: 0 16px 32px; }
+
+  @media (max-width: 560px) {
+    .step { padding: 16px; }
+    .topbar-inner { min-height: 52px; }
+    h1 { font-size: 1rem; }
+  }
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <h1>Norton → Proton Pass</h1>
+    <button type="button" id="clear" hidden>Clear everything</button>
+  </div>
+</header>
+
+<main>
+  <p class="intro">Converts the logins in a Norton Password Manager CSV export into a file that Proton Pass can import. Everything happens offline, on this page.</p>
+
+  <section class="step" aria-labelledby="step1-title">
+    <h2 id="step1-title"><span class="step-num">1</span> Choose your Norton export</h2>
+    <div class="drop-zone" id="drop-zone">
+      <p>Drag your Norton <code>.csv</code> export here, or</p>
+      <button type="button" class="primary" id="browse">Browse…</button>
+      <input type="file" id="file-input" accept=".csv,text/csv" hidden>
+      <p class="file-name" id="file-name" hidden></p>
+    </div>
+    <p class="privacy">Your file is read in this browser and never uploaded. <a href="https://github.com/willhuddleston/norton-to-proton-pass#security" target="_blank" rel="noopener noreferrer">How this is enforced</a></p>
+    <p class="alert" id="error" role="alert" hidden></p>
+  </section>
+
+  <section class="step" id="review" aria-labelledby="step2-title" hidden>
+    <h2 id="step2-title"><span class="step-num">2</span> Review</h2>
+    <p class="summary" id="summary" aria-live="polite"></p>
+    <ul class="skipped-list" id="skipped-list"></ul>
+
+    <details class="panel warn" id="warnings-panel">
+      <summary id="warnings-summary"></summary>
+      <ul id="warnings-list"></ul>
+    </details>
+    <details class="panel" id="duplicates-panel">
+      <summary id="duplicates-summary"></summary>
+      <ul id="duplicates-list"></ul>
+    </details>
+
+    <div class="toolbar">
+      <fieldset class="segmented" id="filter">
+        <legend>Show rows</legend>
+        <label><input type="radio" name="filter" value="all" checked><span id="filter-all">All</span></label>
+        <label><input type="radio" name="filter" value="email"><span id="filter-email">Email</span></label>
+        <label><input type="radio" name="filter" value="username"><span id="filter-username">Username</span></label>
+      </fieldset>
+      <button type="button" id="reveal" aria-pressed="false">Show passwords</button>
+    </div>
+
+    <div class="table-wrap" tabindex="0" aria-label="Preview of converted logins">
+      <table>
+        <thead>
+          <tr><th scope="col">Name</th><th scope="col">URL</th><th scope="col">Email</th><th scope="col">Username</th><th scope="col">Password</th><th scope="col">Vault</th></tr>
+        </thead>
+        <tbody id="preview-body"></tbody>
+      </table>
+      <p class="no-rows" id="no-rows" hidden>No logins to show.</p>
+    </div>
+  </section>
+
+  <section class="step" id="options-step" aria-label="Options" hidden>
+    <details class="advanced" id="advanced">
+      <summary><span class="step-num">3</span>Advanced options</summary>
+      <form class="options" id="options" autocomplete="off">
+        <div class="option">
+          <label class="label" for="opt-username">User Name goes to</label>
+          <select id="opt-username" name="userNameMode">
+            <option value="auto" selected>Auto: emails to Email, everything else to Username</option>
+            <option value="username">Always Username</option>
+            <option value="email">Always Email</option>
+            <option value="both">Both: emails go into Email and Username</option>
+          </select>
+        </div>
+
+        <div class="option">
+          <label class="label" for="opt-vault">Vault label</label>
+          <input type="text" id="opt-vault" name="vaultLabel" value="Norton Import" spellcheck="false">
+          <p class="hint">Proton groups the rows by this label on its import screen, and you choose a vault for each group. It can be left blank.</p>
+        </div>
+
+        <div class="option">
+          <fieldset>
+            <legend>Norton favourites</legend>
+            <label class="radio"><input type="radio" name="favourites" value="own" checked><span>Own group, labelled:</span></label>
+            <div class="indent"><input type="text" id="opt-fav-label" name="favouritesLabel" value="Norton Favourites" aria-label="Favourites label" spellcheck="false"></div>
+            <label class="radio"><input type="radio" name="favourites" value="same"><span>Same group as other logins</span></label>
+            <label class="radio"><input type="radio" name="favourites" value="note"><span>Same group, and add “Norton favourite” to the note</span></label>
+          </fieldset>
+        </div>
+
+        <div class="option">
+          <fieldset>
+            <legend>Exact duplicates</legend>
+            <label class="radio"><input type="radio" name="duplicates" value="skip" checked><span>Skip (same name, URL, user name, password and note)</span></label>
+            <label class="radio"><input type="radio" name="duplicates" value="keep"><span>Keep</span></label>
+          </fieldset>
+        </div>
+      </form>
+    </details>
+  </section>
+
+  <section class="step" id="download-step" aria-labelledby="step4-title" hidden>
+    <h2 id="step4-title"><span class="step-num">4</span> Download</h2>
+    <button type="button" class="primary" id="download">Download proton-pass-import.csv</button>
+    <p class="privacy" id="download-empty" hidden>There are no logins to download.</p>
+    <div class="checklist" id="checklist" hidden>
+      <h3>Next steps</h3>
+      <ol>
+        <li>In Proton Pass, open Settings → Import → Generic CSV and upload the file.</li>
+        <li>On the vault screen, choose or create a vault for each group (<span id="group-names"></span>).</li>
+        <li>Spot-check a few logins.</li>
+        <li>Delete the Norton export and this file, and empty the trash or recycle bin.</li>
+      </ol>
+    </div>
+  </section>
+</main>
+
+<footer>Open source under the MIT licence. Not affiliated with Norton or Proton.</footer>
+
+<script src="converter.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
