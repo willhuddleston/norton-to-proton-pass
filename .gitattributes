@@ -1,2 +1,4 @@
 # Fixtures must keep their exact bytes (BOM, CRLF vs LF), so never convert them.
 test/fixtures/*.csv -text
+# Source is inlined into the release file, so keep LF on every OS for a reproducible build.
+src/** text eol=lf
